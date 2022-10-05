@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>422a1da4-eebb-4379-b328-26675d5edd06</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,16 +20,23 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Serilog" Version="2.11.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.22.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ETicaretAPI.Application\ETicaretAPI.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\ETicaretAPI.Infrastructure\ETicaretAPI.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\ETicaretAPI.Persistence\ETicaretAPI.Persistence.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\ETicaretAPI.SignalR\ETicaretAPI.SignalR.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Middlewares\" />
     <Folder Include="wwwroot\NewFolder\" />
   </ItemGroup>
 

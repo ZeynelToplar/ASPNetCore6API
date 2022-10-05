@@ -1,7 +1,10 @@
 ﻿using ETicaretAPI.Application.Abstractions.Token;
+using ETicaretAPI.Domain.Entities.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace ETicaretAPI.Infrastructure.Services.Token
@@ -15,7 +18,7 @@ namespace ETicaretAPI.Infrastructure.Services.Token
             _configuration = configuration;
         }
 
-        public Application.DTOs.Token CreateAccessToken(int minute)
+        public Application.DTOs.Token CreateAccessToken(int second, AppUser user)
         {
             Application.DTOs.Token token = new();
 
@@ -25,20 +28,34 @@ namespace ETicaretAPI.Infrastructure.Services.Token
             //şifrelenmiş kimliği oluşturuyoruz.
             SigningCredentials signingCredentials  = new(securityKey,SecurityAlgorithms.HmacSha256);
 
+            var aud = _configuration["Token:Audience"];
+
             //olusturulacak token ayarlarini veriyoruz.
-            token.Expiration = DateTime.UtcNow.AddMinutes(minute);
+            token.Expiration = DateTime.UtcNow.AddSeconds(second);
             JwtSecurityToken securityToken = new(
                 audience:_configuration["Token:Audience"],
                 issuer: _configuration["Token:Issuer"],
                 expires:token.Expiration,
                 notBefore:DateTime.UtcNow,
-                signingCredentials: signingCredentials
+                signingCredentials: signingCredentials,
+                claims : new List<Claim> { new(ClaimTypes.Name, user.UserName)}
                 );
 
             //Token olusturucu sinifindan bir örnek alalim
             JwtSecurityTokenHandler tokenHandler = new();
             token.AccessToken = tokenHandler.WriteToken(securityToken);
+
+            token.RefreshToken = CreateRefreshToken();
+
             return token;
+        }
+
+        public string CreateRefreshToken()
+        {
+            byte[] number = new byte[32];
+            using RandomNumberGenerator random  =  RandomNumberGenerator.Create();
+            random.GetBytes(number);
+            return Convert.ToBase64String(number);
         }
     }
 }
