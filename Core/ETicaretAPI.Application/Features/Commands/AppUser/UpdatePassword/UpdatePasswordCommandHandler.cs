@@ -20,7 +20,7 @@ namespace ETicaretAPI.Application.Features.Commands.AppUser.UpdatePassword
 
         public async Task<UpdatePasswordCommandResponse> Handle(UpdatePasswordCommandRequest request, CancellationToken cancellationToken)
         {
-            if (request.Password.Equals(request.PasswordConfirm))
+            if (!request.Password.Equals(request.PasswordConfirm))
                 throw new PasswordChangeFailedException("Şifreler uyuşmamaktadır.");
 
             await _userService.UpdatePasswordAsync(request.UserId,request.ResetToken,request.Password);
